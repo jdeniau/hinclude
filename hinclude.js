@@ -54,10 +54,17 @@ var hinclude;
       return fragment;
     },
 
+    replace_html: function (element, htmlText) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+      element.appendChild(this.create_fragment(htmlText));
+    },
+
     set_content_async: function (element, req, user_cb) {
       if (req.status === 200 || req.status === 304) {
-        element.appendChild(this.create_fragment(req.responseText));
-        this.call_user_callback(element, req, user_cb)
+        this.replace_html(element, req.responseText);
+        this.call_user_callback(element, req, user_cb);
       }
       element.className = hinclude.classprefix + req.status;
     },
@@ -68,7 +75,6 @@ var hinclude;
       hinclude.outstanding -= 1;
       if (hinclude.outstanding === 0) {
         hinclude.show_buffered_content();
-        call_user_callback(element, req, user_cb)
       }
     },
 
@@ -265,5 +271,5 @@ var hinclude;
   };
 
   hinclude.addDOMLoadEvent(function () { hinclude.run(); });
-}());
 
+}());
