@@ -1,7 +1,7 @@
 /*
 hinclude.js -- HTML Includes (version 0.9.5)
 
-Copyright (c) 2005-2012 Mark Nottingham <mnot@mnot.net>
+Copyright (c) 2005-2014 Mark Nottingham <mnot@mnot.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,34 +38,50 @@ var hinclude;
   hinclude = {
     classprefix: "include_",
 
-    set_content_async: function (element, req) {
-      if (req.readyState === 4) {
-        if (req.status === 200 || req.status === 304) {
-          element.innerHTML = req.responseText;
-        }
-        element.className = hinclude.classprefix + req.status;
+    call_user_callback: function (element, req, user_cb) {
+      if (typeof user_cb === 'string') {
+        new Function('element', user_cb+'(element)')(element);
       }
     },
 
+    create_fragment: function (htmlText) {
+      var fragment = document.createDocumentFragment();
+      var parentNode = document.createElement('div');
+      parentNode.innerHTML = htmlText;
+      while (parentNode.firstChild) {
+        fragment.appendChild(parentNode.firstChild);
+      }
+      return fragment;
+    },
+
+    replace_html: function (element, htmlText) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+      element.appendChild(this.create_fragment(htmlText));
+    },
+
+    set_content_async: function (element, req, user_cb) {
+      if (req.status === 200 || req.status === 304) {
+        this.replace_html(element, req.responseText);
+        this.call_user_callback(element, req, user_cb);
+      }
+      element.className = hinclude.classprefix + req.status;
+    },
+
     buffer: [],
-    set_content_buffered: function (element, req) {
-      if (req.readyState === 4) {
-        hinclude.buffer.push([element, req]);
-        hinclude.outstanding -= 1;
-        if (hinclude.outstanding === 0) {
-          hinclude.show_buffered_content();
-        }
+    set_content_buffered: function (element, req, user_cb) {
+      hinclude.buffer.push([element, req, user_cb]);
+      hinclude.outstanding -= 1;
+      if (hinclude.outstanding === 0) {
+        hinclude.show_buffered_content();
       }
     },
 
     show_buffered_content: function () {
       var include;
       while (hinclude.buffer.length > 0) {
-        include = hinclude.buffer.pop();
-        if (include[1].status === 200 || include[1].status === 304) {
-          include[0].innerHTML = include[1].responseText;
-        }
-        include[0].className = hinclude.classprefix + include[1].status;
+        this.set_content_async.apply(this, hinclude.buffer.pop());
       }
     },
 
@@ -88,11 +104,11 @@ var hinclude;
       }
 
       for (i; i < this.includes.length; i += 1) {
-        this.include(this.includes[i], this.includes[i].getAttribute("src"), this.includes[i].getAttribute("media"), callback);
+        this.include(this.includes[i], this.includes[i].getAttribute("src"), this.includes[i].getAttribute("media"), callback, this.includes[i].getAttribute("data-callback"));
       }
     },
 
-    include: function (element, url, media, incl_cb) {
+    include: function (element, url, media, incl_cb, user_cb) {
       if (media && window.matchMedia && !window.matchMedia(media).matches) {
         return;
       }
@@ -135,8 +151,10 @@ var hinclude;
         if (req) {
           this.outstanding += 1;
           req.onreadystatechange = function () {
-            if (typeof incl_cb === 'function') {
-              incl_cb(element, req);
+            if (req.readyState === 4) {
+              if (typeof incl_cb === 'function') {
+                incl_cb(element, req, user_cb);
+              }
             }
           };
           try {
@@ -253,5 +271,5 @@ var hinclude;
   };
 
   hinclude.addDOMLoadEvent(function () { hinclude.run(); });
-}());
 
+}());
