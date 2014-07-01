@@ -87,13 +87,14 @@ var hinclude;
 
     outstanding: 0,
     includes: [],
-    run: function () {
+    run: function (doc) {
+      doc = doc||document;
       var i = 0;
       var mode = this.get_meta("include_mode", "buffered");
       var callback;
-      this.includes = document.getElementsByTagName("hx:include");
+      this.includes = doc.getElementsByTagName("hx:include");
       if (this.includes.length === 0) { // remove ns for IE
-        this.includes = document.getElementsByTagName("include");
+        this.includes = doc.getElementsByTagName("include");
       }
       if (mode === "async") {
         callback = this.set_content_async;
