@@ -83,3 +83,59 @@ That's adequate for typical applications. However, for debugging and other speci
 For example, if fetching the included URL results in a `404 Not Found` status code, the class of the include element will be changed to `include_404`. Likewise, a `500 Server Error` status code will result in the include element&#8217;s class being changed to `include_500`.
 
 
+
+## JavaScript event
+
+You can execute a JavaScript function when the content is loaded. This callback will be executed with the `hx:include` element as first parameter.
+
+```html
+	<hx:include src="new" data-callback="newCallback">
+	</hx:include>
+```
+
+```js
+	function newCallback(element) {
+		alert(element.innerHTML);
+		// Display the HInclude response content
+	}
+```
+
+The JavaScript callback must be a function in the global scope. But you can wrap it in a exposed context.
+
+```html
+	<hx:include src="new" data-callback="hincludeCallback.new">
+	</hx:include>
+```
+
+```js
+	var hincludeCallback = {
+		new: function (element) {
+			alert(element.innerHTML);
+			// Display the HInclude response
+		}
+	}
+```
+
+
+
+## JavaScript API
+
+You can re-run hinclude, and resolve every `hx:include` element, when you want.
+
+```js
+	hinclude.run();
+```
+
+If you want to parse a small part of your HTML, for example for a content loaded in AJAX, you can give the root element as first parameter.
+
+```html
+	<hx:include src="content1"></hx:include>
+	<div id="side">
+		<hx:include src="content2"></hx:include>
+	</div>
+```
+
+```js
+	hinclude.run( document.getElementById('side') );
+	// Only the content2 will call & load 
+```
