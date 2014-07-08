@@ -64,13 +64,34 @@ Before the included content is displayed, anything inside the include element (h
 
 ```html
 	<hx:include src="new">
-    	this content will be overwritten by the included content
+		this content will be overwritten by the included content
 	</hx:include>
 ```
 
 Since HTML instructs browsers to ignore elements they don&#8217;t understand, default content is also shown by those that have JavaScript turned off.
 
 Of course, you can have no default content, in which case nothing will show up until the include is successful. Which brings up&#8230;
+
+
+
+## Cookie Conditioning
+
+The request could be conditioned to a cookie presence. The content will be dynamically fetch only if the user has a specific cookie.
+For example, this could be useful to customize an interface only for authenticated users:
+
+```html
+	<hx:include src="authenticated" cookie="knownUser">
+		this content will be overwritten, only if the user has a "knownUser" cookie.
+	</hx:include>
+```
+
+You also can set up OR conditions with a "||" separator:
+
+```html
+	<hx:include src="authenticated" cookie="knownUser || regularUser">
+		this content will be overwritten, only if the user has a "knownUser" or a "regularUser" cookie.
+	</hx:include>
+```
 
 
 
