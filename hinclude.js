@@ -133,7 +133,13 @@ var hinclude;
           var cookie_list = cookie_value.split('||');
           var i;
           for (i in cookie_list) {
-            if (cookie_list.hasOwnProperty(i) && this.has_cookie(cookie_list[i].trim())) {
+            var cookieValue = cookie_list[i].trim();
+            var notCookieCondition = false;
+            if (cookieValue.indexOf('!') == 0) {
+              cookieValue = cookieValue.slice(1);
+              notCookieCondition = true
+            }
+            if (cookie_list.hasOwnProperty(i) && (notCookieCondition == this.has_cookie(cookieValue))) {
               hasCookie = true;
               break;
             }
