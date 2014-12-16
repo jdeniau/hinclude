@@ -137,7 +137,7 @@ var hinclude;
             var cookieCondition = true;
             if (cookieValue.indexOf('!') == 0) {
               cookieValue = cookieValue.slice(1);
-              cookieCondition = true
+              cookieCondition = false
             }
             if (cookie_list.hasOwnProperty(i) && (cookieCondition == this.has_cookie(cookieValue))) {
               hasCookie = true;
