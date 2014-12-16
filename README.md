@@ -93,6 +93,15 @@ You also can set up OR conditions with a "||" separator:
 	</hx:include>
 ```
 
+## Custom conditoning
+
+The request could be conditionned using a custom statement using `beforeload` property 
+
+```html
+	<hx:include src="authenticated" beforeload="knownUser()">
+		this content will be overwritten, only if the `knownUser` function return `true`.
+	</hx:include>
+```
 
 
 ## Advanced Error Handling
