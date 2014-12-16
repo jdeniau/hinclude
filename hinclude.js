@@ -134,12 +134,12 @@ var hinclude;
           var i;
           for (i in cookie_list) {
             var cookieValue = cookie_list[i].trim();
-            var notCookieCondition = false;
+            var cookieCondition = true;
             if (cookieValue.indexOf('!') == 0) {
               cookieValue = cookieValue.slice(1);
-              notCookieCondition = true
+              cookieCondition = true
             }
-            if (cookie_list.hasOwnProperty(i) && (notCookieCondition == this.has_cookie(cookieValue))) {
+            if (cookie_list.hasOwnProperty(i) && (cookieCondition == this.has_cookie(cookieValue))) {
               hasCookie = true;
               break;
             }
