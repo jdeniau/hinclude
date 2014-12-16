@@ -118,7 +118,7 @@ var hinclude;
         var data = decodeURIComponent(url.substring(url.indexOf(",") + 1, url.length));
         element.innerHTML = data;
       } else {
-        var req = false;
+        var req = true;
         // Test if the element has a beforeload statement
         var beforeload = element.getAttribute('beforeload');
         if (beforeload) {
@@ -145,7 +145,7 @@ var hinclude;
             }
           }
         }
-        if (cookie_value && !hasCookie) {
+        if (!req || (cookie_value && !hasCookie)) {
           req = false;
         } else {
           if (window.XMLHttpRequest) {
