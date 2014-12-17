@@ -118,7 +118,14 @@ var hinclude;
         var data = decodeURIComponent(url.substring(url.indexOf(",") + 1, url.length));
         element.innerHTML = data;
       } else {
-        var req = false;
+        var req = true;
+        // Test if the element has a beforeload statement
+        var beforeload = element.getAttribute('beforeload');
+        if (beforeload) {
+          if (eval(beforeload) === false) {
+            req = false;
+          }
+        }
         // test if the element has a claimed cookie
         var cookie_value = element.getAttribute("cookie");
         var hasCookie = false;
@@ -126,13 +133,19 @@ var hinclude;
           var cookie_list = cookie_value.split('||');
           var i;
           for (i in cookie_list) {
-            if (cookie_list.hasOwnProperty(i) && this.has_cookie(cookie_list[i].trim())) {
+            var cookieValue = cookie_list[i].trim();
+            var cookieCondition = true;
+            if (cookieValue.indexOf('!') == 0) {
+              cookieValue = cookieValue.slice(1);
+              cookieCondition = false
+            }
+            if (cookie_list.hasOwnProperty(i) && (cookieCondition == this.has_cookie(cookieValue))) {
               hasCookie = true;
               break;
             }
           }
         }
-        if (cookie_value && !hasCookie) {
+        if (!req || (cookie_value && !hasCookie)) {
           req = false;
         } else {
           if (window.XMLHttpRequest) {
