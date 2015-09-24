@@ -38,6 +38,18 @@ var hinclude;
   hinclude = {
     classprefix: "include_",
 
+    trigger_event: function (target, type, event) {
+        var doc = document;
+        if (doc.createEvent) {
+            event = doc.createEvent("Event");
+            event.initEvent(type, true, true);
+            target.dispatchEvent(event);
+        } else {
+            event = doc.createEventObject();
+            target.fireEvent('on' + type, event);
+        }
+    },
+
     call_user_callback: function (element, req, user_cb) {
       if (typeof user_cb === 'string') {
         new Function('element', user_cb+'(element)')(element);
@@ -67,6 +79,7 @@ var hinclude;
         this.call_user_callback(element, req, user_cb);
       }
       element.className = hinclude.classprefix + req.status;
+      hinclude.trigger_event(document, 'hinclude_content_set');
     },
 
     buffer: [],
