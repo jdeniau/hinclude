@@ -114,7 +114,9 @@ var hinclude;
       } else if (mode === "buffered") {
         callback = this.set_content_buffered;
         var timeout = this.get_meta("include_timeout", 2.5) * 1000;
-        setTimeout(hinclude.show_buffered_content, timeout);
+        setTimeout(function(){
+          hinclude.show_buffered_content.apply(hinclude);
+        }, timeout);
       }
 
       for (i; i < this.includes.length; i += 1) {
