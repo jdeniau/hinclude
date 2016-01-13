@@ -146,9 +146,9 @@ var hinclude;
         // Test if the element has a beforeload statement
         var beforeload = element.getAttribute('beforeload');
         if (beforeload && typeof window[beforeload] == 'function' && window[beforeload]() === false) {
-            req = false;
-          }
+          req = false;
         }
+
         // test if the element has a claimed cookie
         var cookie_value = element.getAttribute("cookie");
         var hasCookie = false;
