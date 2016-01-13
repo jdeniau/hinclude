@@ -145,8 +145,7 @@ var hinclude;
         var req = true;
         // Test if the element has a beforeload statement
         var beforeload = element.getAttribute('beforeload');
-        if (beforeload) {
-          if (eval(beforeload) === false) {
+        if (beforeload && typeof window[beforeload] == 'function' && window[beforeload]() === false) {
             req = false;
           }
         }
@@ -161,7 +160,7 @@ var hinclude;
             var cookieCondition = true;
             if (cookieValue.indexOf('!') == 0) {
               cookieValue = cookieValue.slice(1);
-              cookieCondition = false
+              cookieCondition = false;
             }
             if (cookie_list.hasOwnProperty(i) && (cookieCondition == this.has_cookie(cookieValue))) {
               hasCookie = true;
