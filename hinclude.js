@@ -125,9 +125,9 @@ var hinclude;
     },
 
     getUrl: function(element) {
-      var generator = element.getAttribute('data-src-generator');
-      if (generator) {
-        return eval(generator);
+      var callback = element.getAttribute('data-src-generator');
+      if (callback && typeof window[callback] == 'function') {
+        return window[callback]();
       }
 
       return element.getAttribute("src");
@@ -197,6 +197,7 @@ var hinclude;
           };
           try {
             req.open("GET", url, true);
+            req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             req.send("");
           } catch (e3) {
             this.outstanding -= 1;
@@ -211,7 +212,7 @@ var hinclude;
       var callback = this.set_content_buffered;
       for (i; i < this.includes.length; i += 1) {
         if (this.includes[i].getAttribute("id") === element_id) {
-          this.include(this.includes[i],  this.getUrl(this.includes[i]), callback);
+          this.include(this.includes[i], this.getUrl(this.includes[i]), callback);
         }
       }
     },
