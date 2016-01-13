@@ -98,9 +98,15 @@ You also can set up OR conditions with a "||" separator:
 The request could be conditionned using a custom statement using `beforeload` property 
 
 ```html
-	<hx:include src="authenticated" beforeload="knownUser()">
+	<hx:include src="authenticated" beforeload="knownUser">
 		this content will be overwritten, only if the `knownUser` function return `true`.
 	</hx:include>
+
+    <script>
+        function knowUser() {
+            return true;
+        }
+    </script>
 ```
 
 ## Url generator
