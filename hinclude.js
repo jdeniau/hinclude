@@ -120,8 +120,17 @@ var hinclude;
       }
 
       for (i; i < this.includes.length; i += 1) {
-        this.include(this.includes[i], this.includes[i].getAttribute("src"), this.includes[i].getAttribute("media"), callback, this.includes[i].getAttribute("data-callback"));
+        this.include(this.includes[i], this.getUrl(this.includes[i]), this.includes[i].getAttribute("media"), callback, this.includes[i].getAttribute("data-callback"));
       }
+    },
+
+    getUrl: function(element) {
+      var callback = element.getAttribute('data-src-generator');
+      if (callback && typeof window[callback] == 'function') {
+        return window[callback]();
+      }
+
+      return element.getAttribute("src");
     },
 
     include: function (element, url, media, incl_cb, user_cb) {
@@ -188,6 +197,7 @@ var hinclude;
           };
           try {
             req.open("GET", url, true);
+            req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             req.send("");
           } catch (e3) {
             this.outstanding -= 1;
@@ -202,7 +212,7 @@ var hinclude;
       var callback = this.set_content_buffered;
       for (i; i < this.includes.length; i += 1) {
         if (this.includes[i].getAttribute("id") === element_id) {
-          this.include(this.includes[i], this.includes[i].getAttribute("src"), callback);
+          this.include(this.includes[i], this.getUrl(this.includes[i]), callback);
         }
       }
     },
