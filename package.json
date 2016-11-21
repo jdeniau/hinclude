@@ -1,8 +1,9 @@
 {
     "name": "Hinclude",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "author": "Mark Nottingham <mnot@mnot.com>",
     "description": "Declarative client-side inclusion for the Web",
+    "main": "hinclude.js",
     "contributors": [ 
       {
         "name": "Fabio Fabbrucci",

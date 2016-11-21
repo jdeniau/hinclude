@@ -311,3 +311,5 @@ var hinclude;
   hinclude.addDOMLoadEvent(function () { hinclude.run(); });
 
 }());
+
+module.exports = hinclude;
