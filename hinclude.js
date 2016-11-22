@@ -312,4 +312,6 @@ var hinclude;
 
 }());
 
-module.exports = hinclude;
+if (typeof module === 'object' && module.exports) {
+  module.exports = hinclude;
+}
